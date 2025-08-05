@@ -10,23 +10,23 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate", // auto-updates service worker
       manifest: {
-        name: "Weather PWA",
-        short_name: "Weather",
+        name: "Not So Boring Weather",
+        short_name: "NSB Weather",
         description: "A mobile-first PWA Weather App",
-        theme_color: "#2196f3",
+        theme_color: "#c7a19d",
         icons: [
           {
-            src: "/pwa-192x192.png",
+            src: "/pwa-icon.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "/pwa-512x512.png",
+            src: "/pwa-icon.png",
             sizes: "512x512",
             type: "image/png",
           },
           {
-            src: "/pwa-maskable-512x512.png",
+            src: "/pwa-icon.png",
             sizes: "512x512",
             type: "image/png",
             purpose: "maskable",
