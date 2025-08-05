@@ -16,6 +16,8 @@ const WeatherHome = () => {
   const [weatherMessage, setWeatherMessage] = useState("");
   const currentDate = new Date();
   const currentTime = currentDate.getHours();
+  const defaultLat = 35.67;
+  const defaultLong = 139.65;
   const getSarcasticMessage = (weather) => {
     const phrases = weatherMessages[weather] || [
       "weather is having an identity crisis",
@@ -42,20 +44,24 @@ const WeatherHome = () => {
       const position = await getPosition();
       const latitude = +position.coords.latitude.toFixed(2) || 36.2;
       const longitude = +position.coords.longitude.toFixed(2) || 138.25;
-      const json = await fetch(
-        weatherApi +
-          `lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
-      );
-      const data = await json.json();
-      setCurrentWeather(data);
-      let sunriseTime = handleUnixTimestamp(data?.sys?.sunrise);
-      let sunsetTime = handleUnixTimestamp(data?.sys?.sunset);
-      setSunriseTime(sunriseTime + " AM");
-      setSunsetTime(sunsetTime + " PM");
-      getSarcasticMessage(data?.weather[0]?.main);
+      fetchAndSetWeathef(latitude, longitude);
     } catch (err) {
+      fetchAndSetWeathef(defaultLat, defaultLong);
       console.error("Error fetching weather data:", err);
     }
+  };
+
+  const fetchAndSetWeathef = async (lat, lon) => {
+    const json = await fetch(
+      weatherApi + `lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+    );
+    const data = await json.json();
+    setCurrentWeather(data);
+    let sunriseTime = handleUnixTimestamp(data?.sys?.sunrise);
+    let sunsetTime = handleUnixTimestamp(data?.sys?.sunset);
+    setSunriseTime(sunriseTime + " AM");
+    setSunsetTime(sunsetTime + " PM");
+    getSarcasticMessage(data?.weather[0]?.main);
   };
   const handleUnixTimestamp = (timestamp) => {
     const date = new Date(timestamp * 1000);
