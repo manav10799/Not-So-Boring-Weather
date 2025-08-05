@@ -10,6 +10,11 @@ import {
 } from "../constants/constants";
 
 const WeatherHome = () => {
+  const [location, setLocation] = useState({
+    isEnable: false,
+    isAdded: false,
+    val: "",
+  });
   const [currentWeather, setCurrentWeather] = useState({});
   const [sunriseTime, setSunriseTime] = useState("");
   const [sunsetTime, setSunsetTime] = useState("");
@@ -25,7 +30,7 @@ const WeatherHome = () => {
     setWeatherMessage(phrases[Math.floor(Math.random() * phrases.length)]);
   };
   useEffect(() => {
-    fetchWeather();
+    fetchLocation();
   }, []);
 
   const backgroundStyle = {
@@ -35,27 +40,32 @@ const WeatherHome = () => {
       ] || weatherGradients.Clear,
   };
 
-  const fetchWeather = async () => {
+  const fetchLocation = async () => {
     const getPosition = () =>
       new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
     try {
       const position = await getPosition();
-      const latitude = +position.coords.latitude.toFixed(2) || 36.2;
-      const longitude = +position.coords.longitude.toFixed(2) || 138.25;
-      fetchAndSetWeathef(latitude, longitude);
+      const latitude = +position.coords.latitude.toFixed(2);
+      const longitude = +position.coords.longitude.toFixed(2);
+      fetchAndSetWeather(latitude, longitude);
     } catch (err) {
-      fetchAndSetWeathef(defaultLat, defaultLong);
+      fetchAndSetWeather(defaultLat, defaultLong);
       console.error("Error fetching weather data:", err);
     }
   };
 
-  const fetchAndSetWeathef = async (lat, lon) => {
-    const json = await fetch(
-      weatherApi + `lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
-    );
+  const fetchAndSetWeather = async (lat, lon, city) => {
+    let API_URL = !location.isAdded
+      ? weatherApi + `lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+      : weatherApi + `q=${city}&appid=${API_KEY}&units=metric`;
+    const json = await fetch(API_URL);
     const data = await json.json();
+    if (!data || data.cod === "404") {
+      alert("City not found!");
+      return;
+    }
     setCurrentWeather(data);
     let sunriseTime = handleUnixTimestamp(data?.sys?.sunrise);
     let sunsetTime = handleUnixTimestamp(data?.sys?.sunset);
@@ -109,9 +119,50 @@ const WeatherHome = () => {
               <p className="text-gray-700 font-extralight text-[11px]">
                 You can look outside to get more information.
               </p>
-              <p className="text-gray-700 text-sm mt-1">
-                {currentWeather?.name} 📍
-              </p>
+              {!location.isEnable ? (
+                <div
+                  className="flex items-center mt-2"
+                  onClick={() =>
+                    setLocation((prev) => ({ ...prev, isEnable: true }))
+                  }
+                >
+                  <p className="text-gray-700 text-sm">
+                    {currentWeather?.name}
+                  </p>
+                  <img
+                    width="20"
+                    height="30"
+                    src={Icon_Url + "marker.png"}
+                    alt="marker"
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center">
+                  <input
+                    type="text"
+                    placeholder="Enter city name"
+                    value={location.val}
+                    onChange={(e) =>
+                      setLocation((prev) => ({
+                        ...prev,
+                        val: e.target.value,
+                        isAdded: true,
+                      }))
+                    }
+                    className="py-2 focus-visible:outline-0"
+                  />
+                  <img
+                    width="20"
+                    height="20"
+                    src={Icon_Url + "login-rounded-right.png"}
+                    alt="login-rounded-right"
+                    onClick={() => {
+                      setLocation((prev) => ({ ...prev, isEnable: false }));
+                      fetchAndSetWeather(null, null, location.val);
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
