@@ -9,7 +9,7 @@ import {
   weatherMessages,
 } from "../constants/constants";
 
-const Home = () => {
+const WeatherHome = () => {
   const [currentWeather, setCurrentWeather] = useState({});
   const [sunriseTime, setSunriseTime] = useState("");
   const [sunsetTime, setSunsetTime] = useState("");
@@ -42,7 +42,6 @@ const Home = () => {
       const position = await getPosition();
       const latitude = +position.coords.latitude.toFixed(2) || 36.2;
       const longitude = +position.coords.longitude.toFixed(2) || 138.25;
-      console.log(latitude, longitude);
       const json = await fetch(
         weatherApi +
           `lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
@@ -193,4 +192,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default WeatherHome;
