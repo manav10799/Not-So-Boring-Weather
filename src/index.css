@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@custom-variant shortScreen (@media (max-height: 680px));
+
+.weather-bg {
+  font-family: "Ubuntu", sans-serif;
+  height: 100vh;
+  /* background: #cfcfcf; */
+  /* background: linear-gradient(0deg, rgba(207, 207, 207, 1) 0%, rgba(214, 204, 182, 1) 15%, rgba(234, 195, 110, 1) 60%, rgba(243, 191, 80, 1) 79%, rgba(253, 187, 45, 1) 100%); */
+}
+
+.londrina-outline-regular {
+  font-family: "Londrina Outline", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
