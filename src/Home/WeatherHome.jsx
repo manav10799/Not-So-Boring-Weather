@@ -62,7 +62,7 @@ const WeatherHome = () => {
       : weatherApi + `q=${city}&appid=${API_KEY}&units=metric`;
     const json = await fetch(API_URL);
     const data = await json.json();
-    if (!data || data.cod === "404") {
+    if (!data || data.cod === "404" || data.cod === "400") {
       alert("City not found!");
       return;
     }
@@ -116,9 +116,22 @@ const WeatherHome = () => {
               {weatherMessage.split(" ").slice(3)}
             </h1>
             <div className="mt-4">
-              <p className="text-gray-700 font-extralight text-[11px]">
-                You can look outside to get more information.
-              </p>
+              <div className="flex items-center justify-between">
+                <p className="text-gray-700 font-extralight text-[11px]">
+                  You can look outside to get more information.
+                </p>
+                <img
+                  width="20"
+                  height="20"
+                  src="https://img.icons8.com/ios/50/reboot.png"
+                  alt="reboot"
+                  onClick={() =>
+                    location.val
+                      ? fetchAndSetWeather(null, null, location.val)
+                      : fetchLocation()
+                  }
+                />
+              </div>
               {!location.isEnable ? (
                 <div
                   className="flex items-center mt-2"

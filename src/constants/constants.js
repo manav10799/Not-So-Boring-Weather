@@ -100,7 +100,7 @@ export const weatherIcons = {
   Clouds: "cloud-lighting--v1.png",
   Rain: "rain.png",
   Snow: "winter.png",
-  Thunderstorm: "cloud-lighting--v1.png",
+  Thunderstorm: "rain.png",
   Drizzle: "light-rain.png",
   Mist: "windy-weather--v1",
   Fog: "fog-day.png",
